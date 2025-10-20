@@ -1,9 +1,4 @@
 #!/bin/bash
-
-exec "$(dirname "$0")/scripts/stop.sh" "$@"
-
-#!/bin/bash
-
 # Stop the monitoring stack using docker-compose or docker compose
 
 set -e
