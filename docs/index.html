@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Monitoring Stack Gallery</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+    <style>
+      :root { color-scheme: light dark; }
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 24px; line-height: 1.5; }
+      h1 { margin: 0 0 8px 0; font-size: 24px; }
+      p  { margin: 0 0 24px 0; color: #666; }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 16px;
+        align-items: start;
+      }
+      .card { border: 1px solid rgba(0,0,0,.08); border-radius: 8px; padding: 8px; background: rgba(255,255,255,.9); }
+      .thumb { width: 100%; height: 160px; object-fit: cover; border-radius: 6px; display: block; }
+      .caption { margin: 8px 4px 4px; font-size: 14px; }
+      @media (prefers-color-scheme: dark) {
+        body { background: #0b0b0c; color: #e6e6e6; }
+        p { color: #9aa0a6; }
+        .card { background: #111215; border-color: #22252b; }
+      }
+      .note { font-size: 13px; margin-top: 16px; color: #888; }
+      .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+      .topbar a { font-size: 14px; text-decoration: none; color: #3b82f6; }
+    </style>
+  </head>
+  <body>
+    <div class="topbar">
+      <h1>Image Gallery</h1>
+      <a href="../README.md">Back to README</a>
+    </div>
+    <p>Click any image to open a lightbox preview. Use arrow keys or on-screen controls to navigate.</p>
+
+    <div class="grid">
+      <div class="card">
+        <a href="images/grafana-login.jpg" class="glightbox" data-gallery="monitoring" data-title="Grafana Login">
+          <img class="thumb" src="images/grafana-login.jpg" alt="Grafana Login">
+        </a>
+        <div class="caption">Grafana Login</div>
+      </div>
+
+      <div class="card">
+        <a href="images/grafana-dashboard-view-all.jpg" class="glightbox" data-gallery="monitoring" data-title="Grafana Dashboard - View All">
+          <img class="thumb" src="images/grafana-dashboard-view-all.jpg" alt="Grafana Dashboard - View All">
+        </a>
+        <div class="caption">Grafana Dashboard - View All</div>
+      </div>
+
+      <div class="card">
+        <a href="images/grafana-http-request-rate-view-mode.jpg" class="glightbox" data-gallery="monitoring" data-title="Grafana HTTP Request Rate - View Mode">
+          <img class="thumb" src="images/grafana-http-request-rate-view-mode.jpg" alt="Grafana HTTP Request Rate - View Mode">
+        </a>
+        <div class="caption">Grafana HTTP Request Rate - View Mode</div>
+      </div>
+
+      <div class="card">
+        <a href="images/grafana-http-request-rate-edit-mode.jpg" class="glightbox" data-gallery="monitoring" data-title="Grafana HTTP Request Rate - Edit Mode">
+          <img class="thumb" src="images/grafana-http-request-rate-edit-mode.jpg" alt="Grafana HTTP Request Rate - Edit Mode">
+        </a>
+        <div class="caption">Grafana HTTP Request Rate - Edit Mode</div>
+      </div>
+
+      <div class="card">
+        <a href="images/grafana-error-rate-view-mode.jpg" class="glightbox" data-gallery="monitoring" data-title="Grafana Error Rate - View Mode">
+          <img class="thumb" src="images/grafana-error-rate-view-mode.jpg" alt="Grafana Error Rate - View Mode">
+        </a>
+        <div class="caption">Grafana Error Rate - View Mode</div>
+      </div>
+
+      <div class="card">
+        <a href="images/grafana-error-rate-edit-mode.jpg" class="glightbox" data-gallery="monitoring" data-title="Grafana Error Rate - Edit Mode">
+          <img class="thumb" src="images/grafana-error-rate-edit-mode.jpg" alt="Grafana Error Rate - Edit Mode">
+        </a>
+        <div class="caption">Grafana Error Rate - Edit Mode</div>
+      </div>
+
+      <div class="card">
+        <a href="images/grafana-error-rate-percentage-edit-mode.jpg" class="glightbox" data-gallery="monitoring" data-title="Grafana Error Rate % - Edit Mode">
+          <img class="thumb" src="images/grafana-error-rate-percentage-edit-mode.jpg" alt="Grafana Error Rate % - Edit Mode">
+        </a>
+        <div class="caption">Grafana Error Rate % - Edit Mode</div>
+      </div>
+
+      <div class="card">
+        <a href="images/grafana-active-connections-edit-mode.jpg" class="glightbox" data-gallery="monitoring" data-title="Grafana Active Connections - Edit Mode">
+          <img class="thumb" src="images/grafana-active-connections-edit-mode.jpg" alt="Grafana Active Connections - Edit Mode">
+        </a>
+        <div class="caption">Grafana Active Connections - Edit Mode</div>
+      </div>
+
+      <div class="card">
+        <a href="images/grafana-response-time-edit-mode.jpg" class="glightbox" data-gallery="monitoring" data-title="Grafana Response Time - Edit Mode">
+          <img class="thumb" src="images/grafana-response-time-edit-mode.jpg" alt="Grafana Response Time - Edit Mode">
+        </a>
+        <div class="caption">Grafana Response Time - Edit Mode</div>
+      </div>
+
+      <div class="card">
+        <a href="images/prometheus-http-request-rate.jpg" class="glightbox" data-gallery="monitoring" data-title="Prometheus HTTP Request Rate">
+          <img class="thumb" src="images/prometheus-http-request-rate.jpg" alt="Prometheus HTTP Request Rate">
+        </a>
+        <div class="caption">Prometheus HTTP Request Rate</div>
+      </div>
+
+      <div class="card">
+        <a href="images/prometheus-error-rate.jpg" class="glightbox" data-gallery="monitoring" data-title="Prometheus Error Rate">
+          <img class="thumb" src="images/prometheus-error-rate.jpg" alt="Prometheus Error Rate">
+        </a>
+        <div class="caption">Prometheus Error Rate</div>
+      </div>
+
+      <div class="card">
+        <a href="images/prometheus-error-rate-percentage.jpg" class="glightbox" data-gallery="monitoring" data-title="Prometheus Error Rate Percentage">
+          <img class="thumb" src="images/prometheus-error-rate-percentage.jpg" alt="Prometheus Error Rate Percentage">
+        </a>
+        <div class="caption">Prometheus Error Rate Percentage</div>
+      </div>
+
+      <div class="card">
+        <a href="images/prometheus-response-time.jpg" class="glightbox" data-gallery="monitoring" data-title="Prometheus Response Time">
+          <img class="thumb" src="images/prometheus-response-time.jpg" alt="Prometheus Response Time">
+        </a>
+        <div class="caption">Prometheus Response Time</div>
+      </div>
+
+      <div class="card">
+        <a href="images/prometheus-active-connections.jpg" class="glightbox" data-gallery="monitoring" data-title="Prometheus Active Connections">
+          <img class="thumb" src="images/prometheus-active-connections.jpg" alt="Prometheus Active Connections">
+        </a>
+        <div class="caption">Prometheus Active Connections</div>
+      </div>
+
+      <div class="card">
+        <a href="images/alert-manager.jpg" class="glightbox" data-gallery="monitoring" data-title="Alertmanager">
+          <img class="thumb" src="images/alert-manager.jpg" alt="Alertmanager">
+        </a>
+        <div class="caption">Alertmanager</div>
+      </div>
+    </div>
+
+    <p class="note">Tip: From README, link here with <code>[Gallery](docs/index.html)</code>.</p>
+
+    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <script>
+      const lightbox = GLightbox({ selector: '.glightbox', touchNavigation: true, loop: true });
+    </script>
+  </body>
+  </html>
+
+

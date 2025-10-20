@@ -1,0 +1,51 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/flask-app/*.log
+      # - /var/log/app/*.log
+    fields:
+      service: flask-app
+      environment: workshop
+    fields_under_root: true
+    multiline.pattern: '^\d{4}-\d{2}-\d{2}'
+    multiline.negate: true
+    multiline.match: after
+    # Add this to prevent restarts when no files exist
+    ignore_older: 24h
+    close_inactive: 1h
+
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/nginx/*.log
+    fields:
+      service: nginx
+      environment: workshop
+    fields_under_root: true
+
+# Send directly to Elasticsearch (bypass Logstash) to verify indexing
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  index: "workshop-logs-%{+yyyy.MM.dd}"
+
+# Use classic indices (not data streams) and disable ILM for this test
+setup.ilm.enabled: false
+setup.template.enabled: true
+setup.template.name: "workshop-logs"
+setup.template.pattern: "workshop-logs-*"
+
+processors:
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  - add_docker_metadata: ~
+  - add_kubernetes_metadata: ~
+
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 7
+  permissions: 0644
+

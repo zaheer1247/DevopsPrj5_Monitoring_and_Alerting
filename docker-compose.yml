@@ -1,0 +1,163 @@
+# Universal Docker Compose Configuration for Windows/Mac/Linux
+services:
+  # Flask Application
+  flask-app:
+    container_name: devops-flask-app
+    build: .
+    image: devops-flask-app
+    ports:
+      - "0.0.0.0:5000:5000"
+    environment:
+      - FAILURE_RATE=0.1
+      - SLOW_DELAY=2.0
+      - DEBUG=false
+    volumes:
+      - ./logs:/var/log/flask-app
+    networks:
+      - monitoring
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Prometheus
+  prometheus:
+    container_name: devops-prometheus
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./config/prometheus/alert-rules.yml:/etc/prometheus/alert-rules.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  # Alertmanager
+  alertmanager:
+    container_name: devops-alertmanager
+    image: prom/alertmanager:latest
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./config/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+      - alertmanager_data:/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  # Grafana
+  grafana:
+    container_name: devops-grafana
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./config/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  # Elasticsearch
+  elasticsearch:
+    container_name: devops-elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - monitoring
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Logstash
+  logstash:
+    container_name: devops-logstash
+    image: docker.elastic.co/logstash/logstash:8.11.0
+    ports:
+      - "5044:5044"
+      - "9600:9600"
+    volumes:
+      - ./config/logging/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    environment:
+      - LS_JAVA_OPTS=-Xmx512m -Xms256m
+    networks:
+      - monitoring
+    restart: unless-stopped
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+  # Filebeat
+  filebeat:
+    container_name: devops-filebeat
+    image: docker.elastic.co/beats/filebeat:8.11.0
+    user: root
+    volumes:
+      - ./config/logging/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./logs:/var/log/flask-app:ro
+    networks:
+      - monitoring
+    restart: unless-stopped
+    depends_on:
+      - logstash
+
+  # Kibana
+  kibana:
+    container_name: devops-kibana
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    networks:
+      - monitoring
+    restart: unless-stopped
+    depends_on:
+      - elasticsearch
+
+  # No-op webhook receiver for Alertmanager testing
+  noop-webhook:
+    container_name: devops-noop-webhook
+    image: devops-flask-app
+    command: ["python", "/app/src/app/noop_webhook.py"]
+    ports:
+      - "8089:8080"
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+volumes:
+  prometheus_data:
+  alertmanager_data:
+  grafana_data:
+  elasticsearch_data:
+
+networks:
+  monitoring:
+    driver: bridge

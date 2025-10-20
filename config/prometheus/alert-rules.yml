@@ -1,0 +1,116 @@
+groups:
+  - name: flask-app
+    rules:
+      - alert: HighErrorRate
+        expr: error_rate > 10
+        for: 2m
+        labels:
+          severity: warning
+          service: flask-app
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value }}% for Flask application"
+
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+        for: 3m
+        labels:
+          severity: warning
+          service: flask-app
+        annotations:
+          summary: "High response time detected"
+          description: "95th percentile response time is {{ $value }}s"
+
+      - alert: ServiceDown
+        expr: up{job="flask-app"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: flask-app
+        annotations:
+          summary: "Flask application is down"
+          description: "Flask application has been down for more than 1 minute"
+
+      - alert: TooManyConnections
+        expr: active_connections > 100
+        for: 2m
+        labels:
+          severity: warning
+          service: flask-app
+        annotations:
+          summary: "Too many active connections"
+          description: "Active connections: {{ $value }}"
+
+  - name: infrastructure
+    rules:
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is {{ $value }}%"
+
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is {{ $value }}%"
+
+      - alert: DiskSpaceLow
+        expr: (1 - (node_filesystem_avail_bytes / node_filesystem_size_bytes)) * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Disk space is low"
+          description: "Disk usage is {{ $value }}%"
+
+  - name: elasticsearch
+    rules:
+      - alert: ElasticsearchDown
+        expr: up{job="elasticsearch"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: elasticsearch
+        annotations:
+          summary: "Elasticsearch is down"
+          description: "Elasticsearch has been down for more than 1 minute"
+
+      - alert: ElasticsearchHighMemory
+        expr: elasticsearch_jvm_memory_used_bytes / elasticsearch_jvm_memory_max_bytes * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          service: elasticsearch
+        annotations:
+          summary: "Elasticsearch high memory usage"
+          description: "Elasticsearch memory usage is {{ $value }}%"
+
+  - name: logstash
+    rules:
+      - alert: LogstashDown
+        expr: up{job="logstash"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: logstash
+        annotations:
+          summary: "Logstash is down"
+          description: "Logstash has been down for more than 1 minute"
+
+      - alert: LogstashPipelineErrors
+        expr: increase(logstash_pipeline_events_failed_total[5m]) > 10
+        for: 2m
+        labels:
+          severity: warning
+          service: logstash
+        annotations:
+          summary: "Logstash pipeline errors"
+          description: "Logstash has {{ $value }} failed events in the last 5 minutes"
+
